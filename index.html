@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <meta name="theme-color" content="#10151a" />
+  <title>Nokos VIP • Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root{--bg:#10151a;--panel:#182027;--panel2:#202b33;--line:#34434d;--text:#f1f5f7;--muted:#9eabb3;--accent:#6fe58a;--accent2:#4bc66d;--danger:#ff6b6b;--gold:#ffd86b;--shadow:0 12px 35px rgba(0,0,0,.32)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    body{overflow-x:hidden}
+    button,input{font:inherit}
+    button{border:0;cursor:pointer;color:inherit}
+    .app{width:min(760px,100%);margin:auto;padding:16px 14px 100px}
+    .pixel{image-rendering:pixelated}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 14px}
+    .brand{display:flex;align-items:center;gap:11px}.brand-icon{width:44px;height:44px;border:2px solid #53646e;background:#27343c;display:grid;place-items:center;box-shadow:4px 4px 0 #0b0f12;font-size:23px}
+    .brand-title{font-weight:900;letter-spacing:.4px}.brand-sub{font-size:11px;color:var(--muted);margin-top:2px}
+    .status{padding:8px 10px;border:1px solid var(--line);background:#151d22;font-size:11px;color:var(--muted);box-shadow:3px 3px 0 #0b0f12}
+    .hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#1a252c,#11181d);border:2px solid #42525d;box-shadow:var(--shadow),6px 6px 0 #0b0f12;padding:18px;margin-bottom:14px}
+    .hero:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 6px,rgba(255,255,255,.018) 6px 7px);pointer-events:none}
+    .profile{display:flex;align-items:center;gap:14px;position:relative;z-index:1}.avatar{width:68px;height:68px;border:3px solid var(--accent);background:#0e1418;object-fit:cover;box-shadow:5px 5px 0 #080b0d}.avatar-fallback{display:grid;place-items:center;font-size:28px}
+    .hello{font-size:13px;color:var(--muted)}.name{font-size:23px;font-weight:950;margin:2px 0}.username{font-size:12px;color:#7fc98e}
+    .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:15px;position:relative;z-index:1}.stat{background:#11191e;border:1px solid var(--line);padding:10px}.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}.stat-value{font-weight:900;font-size:16px;margin-top:4px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 9px}.section-title h2{font-size:15px;margin:0}.section-title span{font-size:11px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:var(--panel);border:1px solid var(--line);box-shadow:4px 4px 0 #0a0e11;padding:13px;min-width:0}.card.click{transition:transform .12s,background .12s}.card.click:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #0a0e11}.iconbox{font-size:23px;margin-bottom:7px}.card h3{margin:0 0 4px;font-size:14px}.card p{margin:0;color:var(--muted);font-size:11px;line-height:1.45}
+    .btn{width:100%;padding:12px 13px;background:#26343c;border:1px solid #4a5c67;box-shadow:4px 4px 0 #0a0e11;font-weight:850;text-align:center}.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #0a0e11}.btn.primary{background:var(--accent2);border-color:#9af0ae;color:#08120b}.btn.gold{background:#b89a38;border-color:#ffe79a;color:#151004}.btn.danger{background:#55282d;border-color:#91464d}.btn.small{padding:9px 10px;font-size:12px}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .stack{display:grid;gap:10px}.row{display:flex;gap:8px}.row>*{flex:1}.back{margin-bottom:12px}
+    .list{display:grid;gap:8px}.item{background:var(--panel);border:1px solid var(--line);padding:11px;display:flex;align-items:center;justify-content:space-between;gap:10px}.item-main{min-width:0}.item-title{font-weight:850;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.item-meta{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5}.price{font-weight:950;color:var(--gold);white-space:nowrap}.stock{color:#7ee794}.flag{font-size:18px;margin-right:6px}
+    .search{width:100%;background:#11191e;color:var(--text);border:1px solid var(--line);padding:11px 12px;outline:none}.search:focus{border-color:#6b8a98}.notice{background:#161f24;border:1px dashed #4b5e69;padding:11px;color:var(--muted);font-size:11px;line-height:1.5}.notice strong{color:var(--text)}
+    .history-row{display:grid;grid-template-columns:1fr auto;gap:7px}.tag{display:inline-block;padding:3px 6px;border:1px solid var(--line);font-size:9px;color:var(--muted);margin-right:4px}.tag.ok{color:#8bf29e;border-color:#376645}.tag.bad{color:#ff9898;border-color:#713d42}
+    .scan{position:fixed;inset:0;background:#0b1014;z-index:99;display:grid;place-items:center;padding:28px;transition:opacity .35s,visibility .35s}.scan.hide{opacity:0;visibility:hidden}.scanbox{width:min(420px,100%);border:2px solid #4c606b;background:#111a20;box-shadow:8px 8px 0 #050708;padding:25px;position:relative;overflow:hidden}.scanbox:before{content:"";position:absolute;left:0;right:0;height:2px;background:var(--accent);box-shadow:0 0 18px var(--accent);animation:scanline 1.25s linear infinite}.robot{font-size:52px;text-align:center;margin-bottom:10px;animation:float 1.2s ease-in-out infinite}.scan-title{text-align:center;font-weight:950;letter-spacing:1.4px}.scan-text{text-align:center;color:var(--muted);font-size:11px;min-height:18px;margin-top:7px}.scan-bars{display:grid;gap:5px;margin-top:18px}.scan-bar{height:7px;background:#1c282f;overflow:hidden}.scan-bar i{display:block;height:100%;width:0;background:var(--accent);animation:load 1.5s ease-in-out infinite}.scan-bar:nth-child(2) i{animation-delay:.12s}.scan-bar:nth-child(3) i{animation-delay:.24s}.scan-bar:nth-child(4) i{animation-delay:.36s}
+    @keyframes scanline{0%{top:-2px}100%{top:100%}}@keyframes float{50%{transform:translateY(-5px)}}@keyframes load{0%{width:0}60%{width:100%}100%{width:100%}}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:50;display:none;align-items:flex-end;padding:12px}.modal.show{display:flex}.sheet{width:min(700px,100%);max-height:88vh;overflow:auto;margin:auto;background:#131c21;border:2px solid #465963;box-shadow:8px 8px 0 #050708;padding:15px}.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.sheet-head h3{margin:0;font-size:15px}.close{width:34px;height:34px;background:#28343b;border:1px solid var(--line)}
+    .qr{width:250px;height:250px;margin:12px auto;background:#fff;padding:10px;display:grid;place-items:center}.qr img{max-width:100%;max-height:100%}.center{text-align:center}.muted{color:var(--muted)}.tiny{font-size:10px}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.error{color:#ff9696}.success{color:#91f3a3}
+    .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(30px);opacity:0;background:#25343b;border:1px solid #536873;padding:11px 14px;z-index:120;box-shadow:4px 4px 0 #080a0c;font-size:12px;max-width:90%;transition:.2s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .hidden{display:none!important}@media(max-width:430px){.grid{grid-template-columns:1fr 1fr}.stats{gap:5px}.stat{padding:8px 6px}.stat-value{font-size:14px}.app{padding-left:11px;padding-right:11px}}
+  </style>
+</head>
+<body>
+  <div id="scan" class="scan">
+    <div class="scanbox">
+      <div class="robot">🤖</div>
+      <div class="scan-title">SYSTEM ANALYSIS</div>
+      <div id="scanText" class="scan-text">Menghubungkan ke Telegram...</div>
+      <div class="scan-bars"><div class="scan-bar"><i></i></div><div class="scan-bar"><i></i></div><div class="scan-bar"><i></i></div><div class="scan-bar"><i></i></div></div>
+    </div>
+  </div>
+
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><div class="brand-icon pixel">▣</div><div><div class="brand-title">NOKOS VIP</div><div class="brand-sub">Telegram Mini App • Control Panel</div></div></div>
+      <div id="apiStatus" class="status">CONNECTING</div>
+    </header>
+
+    <section class="hero">
+      <div class="profile">
+        <div id="avatarWrap" class="avatar avatar-fallback">👤</div>
+        <div><div class="hello">Akun Telegram terdeteksi</div><div id="fullName" class="name">Memuat...</div><div id="username" class="username">@-</div></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stat-label">Coin</div><div id="coin" class="stat-value">Rp0</div></div>
+        <div class="stat"><div class="stat-label">TRX</div><div id="trx" class="stat-value">0x</div></div>
+        <div class="stat"><div class="stat-label">Point</div><div id="point" class="stat-value">0</div></div>
+      </div>
+    </section>
+
+    <div id="homeView">
+      <div class="section-title"><h2>⚡ Quick Access</h2><span>MiniCraft UI</span></div>
+      <div class="grid">
+        <div class="card click" onclick="openBuy()"><div class="iconbox">📱</div><h3>Beli Nokos</h3><p>Server 1 + RumahOTP, nomor dan OTP.</p></div>
+        <div class="card click" onclick="openDeposit()"><div class="iconbox">💳</div><h3>Deposit Coin</h3><p>QRIS GoPay otomatis dengan status realtime.</p></div>
+        <div class="card click" onclick="showHistory()"><div class="iconbox">🧾</div><h3>Riwayat TRX</h3><p>Lihat transaksi akun yang sedang login.</p></div>
+        <div class="card click" onclick="refreshMe()"><div class="iconbox">🔄</div><h3>Refresh Data</h3><p>Sinkronkan coin, TRX dan profil terbaru.</p></div>
+      </div>
+      <div class="section-title"><h2>🛡️ System</h2><span>Secure session</span></div>
+      <div class="notice"><strong>Telegram session aktif.</strong><br>Mini App tidak meminta password atau token bot. Identitas akun diverifikasi memakai <span class="mono">Telegram WebApp initData</span> di backend bot sebelum data coin/transaksi dibaca.</div>
+    </div>
+
+    <div id="buyView" class="hidden">
+      <button class="btn small back" onclick="goHome()">← Kembali</button>
+      <div class="section-title"><h2>📱 Beli Nokos</h2><span>Pilih server</span></div>
+      <div class="grid">
+        <div class="card click" onclick="loadS1Countries()"><div class="iconbox">🟩</div><h3>Server 1</h3><p>SMSCode • Negara → layanan → harga.</p></div>
+        <div class="card click" onclick="loadS2Services()"><div class="iconbox">🟦</div><h3>Server 2</h3><p>RumahOTP • App → negara → operator.</p></div>
+      </div>
+      <div id="buyContent" class="stack" style="margin-top:12px"></div>
+    </div>
+
+    <div id="depositView" class="hidden">
+      <button class="btn small back" onclick="goHome()">← Kembali</button>
+      <div class="section-title"><h2>💳 Deposit Coin</h2><span>GoPay QRIS</span></div>
+      <div class="card">
+        <div class="notice"><strong>Saldo coin mengikuti db.json.</strong><br>Nominal deposit akan dikreditkan otomatis setelah gateway menyatakan pembayaran berhasil.</div>
+        <div class="row" style="margin-top:10px"><input id="depositAmount" class="search" inputmode="numeric" placeholder="Contoh: 10000" value="5000"><button class="btn primary" style="max-width:130px" onclick="createDeposit()">Buat QR</button></div>
+      </div>
+      <div id="depositContent" style="margin-top:12px"></div>
+    </div>
+
+    <div id="historyView" class="hidden">
+      <button class="btn small back" onclick="goHome()">← Kembali</button>
+      <div class="section-title"><h2>🧾 Riwayat Transaksi</h2><span>10 terakhir</span></div>
+      <div id="historyContent" class="list"></div>
+    </div>
+  </main>
+
+  <div id="modal" class="modal"><div class="sheet"><div class="sheet-head"><h3 id="modalTitle">Status</h3><button class="close" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
+  <div id="toast" class="toast"></div>
+
+<script>
+(() => {
+  'use strict';
+
+  // SET SEKALI setelah bot API punya URL publik. Bisa juga override via ?api=https://domain-api-kamu.
+  const API_BASE = (new URLSearchParams(location.search).get('api') || 'https://YOUR-BOT-API-DOMAIN.example.com').replace(/\/$/, '');
+  const tg = window.Telegram?.WebApp;
+  let meData = null;
+  let poller = null;
+  let depositPoller = null;
+  let currentOrder = null;
+  let currentServer = null;
+
+  const $ = id => document.getElementById(id);
+  const rupiah = n => 'Rp' + Number(n || 0).toLocaleString('id-ID');
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  const apiReady = () => !API_BASE.includes('YOUR-BOT-API-DOMAIN');
+
+  function toast(msg){ const el=$('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),2600); }
+  function showModal(title, html){ $('modalTitle').textContent=title; $('modalBody').innerHTML=html; $('modal').classList.add('show'); }
+  function closeModal(){ $('modal').classList.remove('show'); }
+  window.closeModal=closeModal;
+
+  async function api(path, options={}){
+    if(!apiReady()) throw new Error('API Mini App belum diatur. Isi API_BASE di index.html.');
+    const initData = tg?.initData || '';
+    if(!initData) throw new Error('Mini App harus dibuka dari Telegram.');
+    const res = await fetch(API_BASE + path, { ...options, headers:{'Content-Type':'application/json','Authorization':'Bearer '+initData,...(options.headers||{})} });
+    let data=null; try{data=await res.json()}catch{}
+    if(!res.ok || !data?.ok) throw new Error(data?.error || `Server error (${res.status})`);
+    return data.data;
+  }
+
+  function setView(name){
+    ['homeView','buyView','depositView','historyView'].forEach(id => $(id).classList.toggle('hidden', id !== name));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  window.goHome=()=>setView('homeView');
+  window.openBuy=()=>{setView('buyView'); $('buyContent').innerHTML='<div class="notice">Pilih server untuk memuat stok terbaru.</div>'};
+  window.openDeposit=()=>{setView('depositView'); $('depositContent').innerHTML=''};
+
+  function renderMe(data){
+    meData=data; const u=data.user||{}, a=data.account||{};
+    $('fullName').textContent=[u.first_name,u.last_name].filter(Boolean).join(' ') || 'Telegram User';
+    $('username').textContent=u.username ? '@'+u.username : 'ID '+u.id;
+    $('coin').textContent=rupiah(a.coin); $('trx').textContent=Number(a.trx||0)+'x'; $('point').textContent=Number(a.point||0);
+    if(u.photo_url){ const img=document.createElement('img'); img.className='avatar'; img.alt=''; img.src=u.photo_url; $('avatarWrap').replaceWith(img); img.id='avatarWrap'; }
+    $('apiStatus').textContent='ONLINE'; $('apiStatus').style.color='var(--accent)';
+  }
+  async function refreshMe(){ try{renderMe(await api('/api/miniapp/me')); toast('Data akun disinkronkan.')}catch(e){toast(e.message)} }
+  window.refreshMe=refreshMe;
+
+  function scanSequence(){
+    const texts=['Menghubungkan ke Telegram...','Memverifikasi session akun...','Membaca data user...','Sinkronisasi coin & TRX...','Analisis selesai ✓']; let i=0;
+    const t=setInterval(()=>{ if(i<texts.length){$('scanText').textContent=texts[i++]} else clearInterval(t)},420);
+  }
+
+  async function boot(){
+    if(tg){tg.ready(); tg.expand(); try{tg.setHeaderColor('#10151a');tg.setBackgroundColor('#10151a')}catch{}}
+    scanSequence();
+    try{
+      if(!tg?.initData) throw new Error('Mini App harus dibuka dari Telegram.');
+      if(!apiReady()) throw new Error('API backend belum dikonfigurasi di index.html.');
+      renderMe(await api('/api/miniapp/me'));
+      setTimeout(()=>{$('scan').classList.add('hide')},1900);
+    }catch(e){
+      $('apiStatus').textContent='OFFLINE'; $('apiStatus').style.color='var(--danger)'; $('scanText').textContent=e.message;
+      setTimeout(()=>{$('scan').classList.add('hide'); toast(e.message)},2100);
+    }
+  }
+
+  function contentLoading(text='Memuat...'){return `<div class="notice">🔍 ${esc(text)}</div>`}
+  function itemButton(html, onclick){return `<div class="item"><div class="item-main">${html}</div><button class="btn small primary" style="max-width:105px" onclick="${onclick}">Pilih</button></div>`}
+
+  async function loadS1Countries(){
+    currentServer=1; $('buyContent').innerHTML=contentLoading('Memuat negara Server 1...');
+    try{
+      const countries=await api('/api/miniapp/server1/countries');
+      $('buyContent').innerHTML=`<input id="buySearch" class="search" placeholder="🔎 Cari negara..." oninput="filterItems()"><div id="buyList" class="list"></div>`;
+      $('buyList')._items=countries.map(c=>({c,html:itemButton(`<div class="item-title">${esc(c.emoji)} ${esc(c.name)}</div><div class="item-meta">Server 1 • pilih untuk melihat layanan</div>`,`loadS1Services(${Number(c.id)},'${esc(c.name).replace(/'/g,"\\'")}')`)})); renderItemList(countries);
+    }catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
+  }
+  async function loadS1Services(countryId,countryName){
+    $('buyContent').innerHTML=contentLoading('Memuat layanan '+countryName+'...');
+    try{
+      const services=await api('/api/miniapp/server1/services?country_id='+encodeURIComponent(countryId));
+      if(!services.length){$('buyContent').innerHTML='<div class="notice">Tidak ada layanan tersedia.</div>';return}
+      $('buyContent').innerHTML=`<button class="btn small back" onclick="loadS1Countries()">← ${esc(countryName)}</button><input id="buySearch" class="search" placeholder="🔎 Cari layanan..." oninput="filterItems()"><div id="buyList" class="list"></div>`;
+      const arr=services.map(s=>({s,html:itemButton(`<div class="item-title">📲 ${esc(s.name)}</div><div class="item-meta">${esc(countryName)} • lihat stok & harga</div>`,`loadS1Products(${countryId},${Number(s.id)},'${esc(countryName).replace(/'/g,"\\'")}')`)})); $('buyList')._items=arr; renderItemList(arr.map(x=>x.s));
+    }catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
+  }
+  async function loadS1Products(countryId,platformId,countryName,page=1){
+    $('buyContent').innerHTML=contentLoading('Memuat stok & harga...');
+    try{
+      const d=await api(`/api/miniapp/server1/products?country_id=${countryId}&platform_id=${platformId}&page=${page}`);
+      const products=d.products||[];
+      if(!products.length){$('buyContent').innerHTML='<div class="notice">Stok produk habis / kosong.</div>';return}
+      $('buyContent').innerHTML=`<button class="btn small back" onclick="loadS1Services(${countryId},'${esc(countryName).replace(/'/g,"\\'")}')">← ${esc(countryName)}</button><input id="buySearch" class="search" placeholder="🔎 Cari harga..." oninput="filterItems()"><div id="buyList" class="list"></div>`;
+      const arr=products.map(p=>({p,html:itemButton(`<div class="item-title">💰 ${rupiah(p.price)}</div><div class="item-meta">${esc(p.name||'Nokos')} • <span class="stock">${Number(p.available||0)} stok</span></div>`,`confirmS1(${Number(p.id)},${countryId},${platformId},'${esc(countryName).replace(/'/g,"\\'")}','${esc(p.name||'Nokos').replace(/'/g,"\\'")}',${Number(p.price)})`)})); $('buyList')._items=arr; renderItemList(arr.map(x=>x.p));
+    }catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
+  }
+  function renderItemList(source){ const list=$('buyList'); if(!list)return; const arr=list._items||[]; list.innerHTML=arr.map(x=>x.html).join('')||'<div class="notice">Tidak ada hasil.</div>'; }
+  function filterItems(){const q=($('buySearch')?.value||'').toLowerCase();const list=$('buyList');if(!list)return;list.innerHTML=(list._items||[]).filter(x=>JSON.stringify(x).toLowerCase().includes(q)).map(x=>x.html).join('')||'<div class="notice">Tidak ditemukan.</div>'}
+  window.filterItems=filterItems; window.loadS1Countries=loadS1Countries; window.loadS1Services=loadS1Services; window.loadS1Products=loadS1Products;
+
+  async function confirmS1(productId,countryId,platformId,countryName,productName,price){
+    showModal('Konfirmasi Server 1',`<div class="card"><div class="item-title">📦 ${esc(productName)}</div><div class="item-meta">🌍 ${esc(countryName)}<br>Harga: <b class="price">${rupiah(price)}</b><br>Saldo sekarang: <b>${rupiah(meData?.account?.coin)}</b></div></div><div class="row" style="margin-top:10px"><button class="btn" onclick="closeModal()">Batal</button><button class="btn primary" onclick="buyS1(${productId},${countryId},${platformId})">🛒 Beli</button></div>`);
+  }
+  window.confirmS1=confirmS1;
+  async function buyS1(productId,countryId,platformId){
+    closeModal(); showModal('Memproses order','<div class="center"><div style="font-size:36px">🤖</div><p class="muted">Mengamankan coin dan membuat order...</p></div>');
+    try{currentOrder=await api('/api/miniapp/order/server1',{method:'POST',body:JSON.stringify({product_id:productId,country_id:countryId,platform_id:platformId})});renderOrder(currentOrder);startOrderPolling(currentOrder.trxId)}catch(e){showModal('Order gagal',`<div class="notice error">❌ ${esc(e.message)}</div><button class="btn" style="margin-top:10px" onclick="closeModal()">Tutup</button>`)}
+  }
+  window.buyS1=buyS1;
+
+  async function loadS2Services(){
+    currentServer=2; $('buyContent').innerHTML=contentLoading('Memuat aplikasi RumahOTP...');
+    try{const services=await api('/api/miniapp/server2/services');$('buyContent').innerHTML=`<input id="buySearch" class="search" placeholder="🔎 Cari aplikasi..." oninput="filterItems()"><div id="buyList" class="list"></div>`;const arr=services.map(s=>({s,html:itemButton(`<div class="item-title">🧩 ${esc(s.name)}</div><div class="item-meta">Server 2 • RumahOTP</div>`,`loadS2Countries(${Number(s.id)},'${esc(s.name).replace(/'/g,"\\'")}')`)}));$('buyList')._items=arr;renderItemList(services)}catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
+  }
+  async function loadS2Countries(serviceId,serviceName){
+    $('buyContent').innerHTML=contentLoading('Memuat negara '+serviceName+'...');
+    try{const countries=await api('/api/miniapp/server2/countries?service_id='+serviceId);$('buyContent').innerHTML=`<button class="btn small back" onclick="loadS2Services()">← ${esc(serviceName)}</button><input id="buySearch" class="search" placeholder="🔎 Cari negara..." oninput="filterItems()"><div id="buyList" class="list"></div>`;const arr=countries.map(c=>({c,html:itemButton(`<div class="item-title">🌍 ${esc(c.name)}</div><div class="item-meta">Stok: <span class="stock">${Number(c.stock||0)}</span> • mulai ${rupiah(c.price)}</div>`,`loadS2Prices(${serviceId},${Number(c.number_id)},'${esc(serviceName).replace(/'/g,"\\'")}','${esc(c.name).replace(/'/g,"\\'")}')`)}));$('buyList')._items=arr;renderItemList(countries)}catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
+  }
+  async function loadS2Prices(serviceId,numberId,serviceName,countryName){
+    $('buyContent').innerHTML=contentLoading('Memuat pricelist...');
+    try{const countries=await api('/api/miniapp/server2/countries?service_id='+serviceId);const c=countries.find(x=>Number(x.number_id)===numberId);if(!c)throw new Error('Negara sudah tidak tersedia.');const prices=c.pricelist||[];$('buyContent').innerHTML=`<button class="btn small back" onclick="loadS2Countries(${serviceId},'${esc(serviceName).replace(/'/g,"\\'")}')">← ${esc(countryName)}</button><div class="list"></div>`;const list=$('buyContent').querySelector('.list');list.innerHTML=prices.map(p=>`<div class="item"><div class="item-main"><div class="item-title">💰 ${rupiah(p.price)} ${p.server_id?`• server ${esc(p.server_id)}`:''}</div><div class="item-meta">Provider: ${esc(p.provider_id)} • stok <span class="stock">${Number(p.stock||0)}</span></div></div><button class="btn small primary" style="max-width:105px" onclick="loadS2Operators(${serviceId},${numberId},'${esc(p.provider_id).replace(/'/g,"\\'")}','${esc(serviceName).replace(/'/g,"\\'")}','${esc(countryName).replace(/'/g,"\\'")}')">Pilih</button></div>`).join('')||'<div class="notice">Pricelist kosong.</div>'}catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
+  }
+  async function loadS2Operators(serviceId,numberId,providerId,serviceName,countryName){
+    $('buyContent').innerHTML=contentLoading('Memuat operator...');
+    try{const ops=await api(`/api/miniapp/server2/operators?country=${encodeURIComponent(countryName)}&provider_id=${encodeURIComponent(providerId)}`);const choices=ops.length?ops:[{id:1,name:'Any'}];$('buyContent').innerHTML=`<button class="btn small back" onclick="loadS2Prices(${serviceId},${numberId},'${esc(serviceName).replace(/'/g,"\\'")}','${esc(countryName).replace(/'/g,"\\'")}')">← ${esc(countryName)}</button><div class="list">${choices.map(o=>`<div class="item"><div class="item-main"><div class="item-title">📡 ${esc(o.name)}</div><div class="item-meta">${esc(serviceName)} • ${esc(countryName)}</div></div><button class="btn small primary" style="max-width:105px" onclick="confirmS2(${serviceId},${numberId},'${esc(providerId).replace(/'/g,"\\'")}',${Number(o.id)},'${esc(serviceName).replace(/'/g,"\\'")}','${esc(countryName).replace(/'/g,"\\'")}','${esc(o.name).replace(/'/g,"\\'")}')">Pilih</button></div>`).join('')}</div>`}catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
+  }
+  window.loadS2Services=loadS2Services;window.loadS2Countries=loadS2Countries;window.loadS2Prices=loadS2Prices;window.loadS2Operators=loadS2Operators;
+
+  async function confirmS2(serviceId,numberId,providerId,operatorId,serviceName,countryName,operatorName){
+    try{const countries=await api('/api/miniapp/server2/countries?service_id='+serviceId);const c=countries.find(x=>Number(x.number_id)===numberId);const p=(c?.pricelist||[]).find(x=>String(x.provider_id)===String(providerId));if(!p)throw new Error('Harga sudah berubah.');const price=Number(p.price||0);showModal('Konfirmasi Server 2',`<div class="card"><div class="item-title">🧩 ${esc(serviceName)}</div><div class="item-meta">🌍 ${esc(countryName)}<br>📡 ${esc(operatorName)}<br>💰 Harga: <b class="price">${rupiah(price)}</b><br>🪙 Coin: <b>${rupiah(meData?.account?.coin)}</b></div></div><div class="row" style="margin-top:10px"><button class="btn" onclick="closeModal()">Batal</button><button class="btn primary" onclick="buyS2(${serviceId},${numberId},'${esc(providerId).replace(/'/g,"\\'")}',${operatorId})">🛒 Beli</button></div>`)}catch(e){toast(e.message)}
+  }
+  window.confirmS2=confirmS2;
+  async function buyS2(serviceId,numberId,providerId,operatorId){closeModal();showModal('Memproses order','<div class="center"><div style="font-size:36px">🤖</div><p class="muted">Mengamankan coin dan membuat order RumahOTP...</p></div>');try{currentOrder=await api('/api/miniapp/order/server2',{method:'POST',body:JSON.stringify({service_id:serviceId,number_id:numberId,provider_id:providerId,operator_id:operatorId})});renderOrder(currentOrder);startOrderPolling(currentOrder.trxId)}catch(e){showModal('Order gagal',`<div class="notice error">❌ ${esc(e.message)}</div><button class="btn" style="margin-top:10px" onclick="closeModal()">Tutup</button>`)} }
+  window.buyS2=buyS2;
+
+  function renderOrder(o){currentOrder=o;const cancelable=Date.now()>=Number(o.cancelAt||0);showModal('Order aktif',`<div class="card"><div class="item-title">📱 ${o.server===2?'Server 2 • RumahOTP':'Server 1'}</div><div class="item-meta">🧾 TRX: <span class="mono">${esc(o.trxId)}</span><br>📞 Nomor: <b>${esc(o.phone)}</b><br>💰 Harga: <b>${rupiah(o.price)}</b><br>🪙 Sisa coin: <b>${rupiah(o.coin)}</b><br>⏳ ${o.expiresAt?new Date(o.expiresAt).toLocaleString('id-ID'): 'menunggu status'}</div></div><div id="orderStatusBox" class="notice" style="margin-top:10px">⏳ Menunggu OTP...</div><button id="cancelOrderBtn" class="btn danger" style="margin-top:10px" ${cancelable?'':'disabled'} onclick="cancelCurrentOrder()">🚫 Batalkan Order</button>`);if(!cancelable)setTimeout(()=>renderOrder(o),Math.max(1000,Number(o.cancelAt||0)-Date.now()+100));}
+  function startOrderPolling(trxId){clearInterval(poller);poller=setInterval(async()=>{try{const s=await api('/api/miniapp/order/'+encodeURIComponent(trxId));const box=$('orderStatusBox');if(!box)return;if(s.status==='otp'){box.className='notice success';box.innerHTML=`<strong>📩 OTP MASUK</strong><br>Nomor: <b>${esc(s.phone||currentOrder.phone)}</b><br>Kode: <b class="mono">${esc(s.otp)}</b><br><br><span class="tiny">${esc(s.message||'')}</span>`;clearInterval(poller);await refreshMe();}else if(s.status==='refunded'){box.className='notice';box.innerHTML='🚫 Order dibatalkan/expired. Coin sudah dikembalikan.';clearInterval(poller);await refreshMe();}else if(s.status==='checking'){box.textContent='🔄 Mengecek provider...';}else{box.textContent='⏳ Menunggu OTP dari provider...';}}catch(e){const box=$('orderStatusBox');if(box)box.textContent='⚠️ '+e.message}},5000)}
+  async function cancelCurrentOrder(){if(!currentOrder?.trxId)return;try{const r=await api('/api/miniapp/order/'+encodeURIComponent(currentOrder.trxId)+'/cancel',{method:'POST',body:'{}'});clearInterval(poller);showModal('Order dibatalkan',`<div class="notice success">✅ Coin dikembalikan.<br>Saldo: <b>${rupiah(r.coin)}</b></div><button class="btn primary" style="margin-top:10px" onclick="closeModal();refreshMe()">Selesai</button>`)}catch(e){toast(e.message)}}
+  window.cancelCurrentOrder=cancelCurrentOrder;
+
+  async function createDeposit(){
+    const amount=Math.floor(Number(String($('depositAmount').value).replace(/[^0-9]/g,'')));if(!amount){toast('Nominal belum diisi.');return}
+    $('depositContent').innerHTML=contentLoading('Membuat QRIS GoPay...');
+    try{const d=await api('/api/miniapp/deposit/gopay',{method:'POST',body:JSON.stringify({amount})});renderDeposit(d);startDepositPolling(d.id)}catch(e){$('depositContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
+  }
+  function renderDeposit(d){$('depositContent').innerHTML=`<div class="card center"><div class="item-title">💳 QRIS GOPAY</div><div class="item-meta">ID: <span class="mono">${esc(d.id)}</span><br>Total: <b class="price">${rupiah(d.amount)}</b></div><div id="qrcode" class="qr"></div><div id="depStatus" class="notice">⏳ Menunggu pembayaran...</div>${d.checkoutUrl?`<a class="btn primary" style="display:block;text-decoration:none;margin-top:10px" href="${esc(d.checkoutUrl)}" target="_blank">💳 Buka Pembayaran</a>`:''}</div>`;if(window.QRCode){try{new QRCode($('qrcode'),{text:d.qrString,width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}catch(e){$('qrcode').innerHTML='<div class="tiny">QR gagal dirender. Gunakan tombol pembayaran.</div>'}}else{$('qrcode').innerHTML='<div class="tiny">Library QR belum termuat.</div>'}}
+  function startDepositPolling(id){clearInterval(depositPoller);depositPoller=setInterval(async()=>{try{const s=await api('/api/miniapp/deposit/'+encodeURIComponent(id));const box=$('depStatus');if(!box)return;if(s.status==='paid'){box.className='notice success';box.innerHTML=`<strong>✅ Pembayaran berhasil!</strong><br>Coin sekarang: <b>${rupiah(s.coin)}</b>`;clearInterval(depositPoller);await refreshMe()}else if(s.status==='expired'){box.className='notice error';box.textContent='⌛ QRIS sudah kedaluwarsa.';clearInterval(depositPoller)}else{box.textContent='⏳ Menunggu pembayaran...'}}catch(e){const box=$('depStatus');if(box)box.textContent='⚠️ '+e.message}},4000)}
+  window.createDeposit=createDeposit;
+
+  async function showHistory(){setView('historyView');$('historyContent').innerHTML=contentLoading('Memuat riwayat...');try{const d=await api('/api/miniapp/me');renderMe(d);const h=d.history||[];$('historyContent').innerHTML=h.length?h.map(t=>`<div class="item history-row"><div class="item-main"><div class="item-title">🧾 ${esc(t.productName||'Nokos')}</div><div class="item-meta"><span class="tag ${t.refunded?'bad':'ok'}">${t.refunded?'REFUNDED':'TRX '+esc(t.server||'')}</span><br>${esc(t.phone)}<br>${new Date(t.date).toLocaleString('id-ID')}<br><span class="mono">${esc(t.id)}</span></div></div><div class="price">${rupiah(t.harga)}</div></div>`).join(''):'<div class="notice">Belum ada transaksi.</div>'}catch(e){$('historyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}}
+  window.showHistory=showHistory;
+
+  boot();
+})();
+</script>
+</body>
+</html>
