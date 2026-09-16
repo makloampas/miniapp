@@ -114,8 +114,8 @@
 (() => {
   'use strict';
 
-  // SET SEKALI setelah bot API punya URL publik. Bisa juga override via ?api=https://domain-api-kamu.
-  const API_BASE = (new URLSearchParams(location.search).get('api') || 'https://YOUR-BOT-API-DOMAIN.example.com').replace(/\/$/, '');
+   // SET SEKALI setelah bot API punya URL publik. Bisa juga override via ?api=https://ryuutzyy.r-cloud.my.id.
+  const API_BASE = (new URLSearchParams(location.search).get('api') || 'https://ryuutzyy.r-cloud.my.id').replace(/\/$/, '');
   const tg = window.Telegram?.WebApp;
   let meData = null;
   let poller = null;
@@ -126,7 +126,7 @@
   const $ = id => document.getElementById(id);
   const rupiah = n => 'Rp' + Number(n || 0).toLocaleString('id-ID');
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-  const apiReady = () => !API_BASE.includes('YOUR-BOT-API-DOMAIN');
+  const apiReady = () => !API_BASE.includes('https://ryuutzyy.r-cloud.my.id');
 
   function toast(msg){ const el=$('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),2600); }
   function showModal(title, html){ $('modalTitle').textContent=title; $('modalBody').innerHTML=html; $('modal').classList.add('show'); }
