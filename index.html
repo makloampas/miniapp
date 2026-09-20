@@ -1,274 +1,808 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-  <meta name="theme-color" content="#10151a" />
-  <title>Nokos VIP • Mini App</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <style>
-    :root{--bg:#10151a;--panel:#182027;--panel2:#202b33;--line:#34434d;--text:#f1f5f7;--muted:#9eabb3;--accent:#6fe58a;--accent2:#4bc66d;--danger:#ff6b6b;--gold:#ffd86b;--shadow:0 12px 35px rgba(0,0,0,.32)}
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-    body{overflow-x:hidden}
-    button,input{font:inherit}
-    button{border:0;cursor:pointer;color:inherit}
-    .app{width:min(760px,100%);margin:auto;padding:16px 14px 100px}
-    .pixel{image-rendering:pixelated}
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 14px}
-    .brand{display:flex;align-items:center;gap:11px}.brand-icon{width:44px;height:44px;border:2px solid #53646e;background:#27343c;display:grid;place-items:center;box-shadow:4px 4px 0 #0b0f12;font-size:23px}
-    .brand-title{font-weight:900;letter-spacing:.4px}.brand-sub{font-size:11px;color:var(--muted);margin-top:2px}
-    .status{padding:8px 10px;border:1px solid var(--line);background:#151d22;font-size:11px;color:var(--muted);box-shadow:3px 3px 0 #0b0f12}
-    .hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#1a252c,#11181d);border:2px solid #42525d;box-shadow:var(--shadow),6px 6px 0 #0b0f12;padding:18px;margin-bottom:14px}
-    .hero:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 6px,rgba(255,255,255,.018) 6px 7px);pointer-events:none}
-    .profile{display:flex;align-items:center;gap:14px;position:relative;z-index:1}.avatar{width:68px;height:68px;border:3px solid var(--accent);background:#0e1418;object-fit:cover;box-shadow:5px 5px 0 #080b0d}.avatar-fallback{display:grid;place-items:center;font-size:28px}
-    .hello{font-size:13px;color:var(--muted)}.name{font-size:23px;font-weight:950;margin:2px 0}.username{font-size:12px;color:#7fc98e}
-    .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:15px;position:relative;z-index:1}.stat{background:#11191e;border:1px solid var(--line);padding:10px}.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}.stat-value{font-weight:900;font-size:16px;margin-top:4px}
-    .section-title{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 9px}.section-title h2{font-size:15px;margin:0}.section-title span{font-size:11px;color:var(--muted)}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:var(--panel);border:1px solid var(--line);box-shadow:4px 4px 0 #0a0e11;padding:13px;min-width:0}.card.click{transition:transform .12s,background .12s}.card.click:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #0a0e11}.iconbox{font-size:23px;margin-bottom:7px}.card h3{margin:0 0 4px;font-size:14px}.card p{margin:0;color:var(--muted);font-size:11px;line-height:1.45}
-    .btn{width:100%;padding:12px 13px;background:#26343c;border:1px solid #4a5c67;box-shadow:4px 4px 0 #0a0e11;font-weight:850;text-align:center}.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #0a0e11}.btn.primary{background:var(--accent2);border-color:#9af0ae;color:#08120b}.btn.gold{background:#b89a38;border-color:#ffe79a;color:#151004}.btn.danger{background:#55282d;border-color:#91464d}.btn.small{padding:9px 10px;font-size:12px}.btn:disabled{opacity:.45;cursor:not-allowed}
-    .stack{display:grid;gap:10px}.row{display:flex;gap:8px}.row>*{flex:1}.back{margin-bottom:12px}
-    .list{display:grid;gap:8px}.item{background:var(--panel);border:1px solid var(--line);padding:11px;display:flex;align-items:center;justify-content:space-between;gap:10px}.item-main{min-width:0}.item-title{font-weight:850;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.item-meta{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5}.price{font-weight:950;color:var(--gold);white-space:nowrap}.stock{color:#7ee794}.flag{font-size:18px;margin-right:6px}
-    .search{width:100%;background:#11191e;color:var(--text);border:1px solid var(--line);padding:11px 12px;outline:none}.search:focus{border-color:#6b8a98}.notice{background:#161f24;border:1px dashed #4b5e69;padding:11px;color:var(--muted);font-size:11px;line-height:1.5}.notice strong{color:var(--text)}
-    .history-row{display:grid;grid-template-columns:1fr auto;gap:7px}.tag{display:inline-block;padding:3px 6px;border:1px solid var(--line);font-size:9px;color:var(--muted);margin-right:4px}.tag.ok{color:#8bf29e;border-color:#376645}.tag.bad{color:#ff9898;border-color:#713d42}
-    .scan{position:fixed;inset:0;background:#0b1014;z-index:99;display:grid;place-items:center;padding:28px;transition:opacity .35s,visibility .35s}.scan.hide{opacity:0;visibility:hidden}.scanbox{width:min(420px,100%);border:2px solid #4c606b;background:#111a20;box-shadow:8px 8px 0 #050708;padding:25px;position:relative;overflow:hidden}.scanbox:before{content:"";position:absolute;left:0;right:0;height:2px;background:var(--accent);box-shadow:0 0 18px var(--accent);animation:scanline 1.25s linear infinite}.robot{font-size:52px;text-align:center;margin-bottom:10px;animation:float 1.2s ease-in-out infinite}.scan-title{text-align:center;font-weight:950;letter-spacing:1.4px}.scan-text{text-align:center;color:var(--muted);font-size:11px;min-height:18px;margin-top:7px}.scan-bars{display:grid;gap:5px;margin-top:18px}.scan-bar{height:7px;background:#1c282f;overflow:hidden}.scan-bar i{display:block;height:100%;width:0;background:var(--accent);animation:load 1.5s ease-in-out infinite}.scan-bar:nth-child(2) i{animation-delay:.12s}.scan-bar:nth-child(3) i{animation-delay:.24s}.scan-bar:nth-child(4) i{animation-delay:.36s}
-    @keyframes scanline{0%{top:-2px}100%{top:100%}}@keyframes float{50%{transform:translateY(-5px)}}@keyframes load{0%{width:0}60%{width:100%}100%{width:100%}}
-    .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:50;display:none;align-items:flex-end;padding:12px}.modal.show{display:flex}.sheet{width:min(700px,100%);max-height:88vh;overflow:auto;margin:auto;background:#131c21;border:2px solid #465963;box-shadow:8px 8px 0 #050708;padding:15px}.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.sheet-head h3{margin:0;font-size:15px}.close{width:34px;height:34px;background:#28343b;border:1px solid var(--line)}
-    .qr{width:250px;height:250px;margin:12px auto;background:#fff;padding:10px;display:grid;place-items:center}.qr img{max-width:100%;max-height:100%}.center{text-align:center}.muted{color:var(--muted)}.tiny{font-size:10px}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.error{color:#ff9696}.success{color:#91f3a3}
-    .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(30px);opacity:0;background:#25343b;border:1px solid #536873;padding:11px 14px;z-index:120;box-shadow:4px 4px 0 #080a0c;font-size:12px;max-width:90%;transition:.2s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .hidden{display:none!important}@media(max-width:430px){.grid{grid-template-columns:1fr 1fr}.stats{gap:5px}.stat{padding:8px 6px}.stat-value{font-size:14px}.app{padding-left:11px;padding-right:11px}}
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>NOKOS CRAFT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root {
+  --grass:    #6cbb3c;
+  --grass-dk: #4e8f2a;
+  --dirt:     #8b5a2b;
+  --dirt-dk:  #5c3a1c;
+  --stone:    #8f8f8f;
+  --stone-lt: #b3b3b3;
+  --stone-dk: #5a5a5a;
+  --sky-1:    #4a90c9;
+  --sky-2:    #7ec8e3;
+  --gold:     #f7c927;
+  --gold-dk:  #a8790a;
+  --diamond:  #4fd8e8;
+  --redstone: #c62b2b;
+  --ink:      #2b2b2b;
+  --paper:    #eae0c8;
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-body:  'VT323', monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 20px;
+  color: var(--ink);
+  background:
+    linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 55%, var(--grass) 55%, var(--grass-dk) 100%);
+  background-attachment: fixed;
+  image-rendering: pixelated;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+::selection { background: var(--gold); color: var(--ink); }
+
+/* ── Generic "block" panel: mimics a Minecraft GUI slot / stone panel ── */
+.block-panel {
+  background: var(--stone-lt);
+  border: 4px solid var(--ink);
+  box-shadow:
+    inset 3px 3px 0 rgba(255,255,255,0.55),
+    inset -3px -3px 0 rgba(0,0,0,0.35),
+    4px 4px 0 rgba(0,0,0,0.25);
+  padding: 14px;
+  margin-bottom: 14px;
+  border-radius: 0;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  padding: 12px 12px 8px;
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--dirt);
+}
+
+.skin-avatar {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  background: var(--gold);
+  border: 3px solid var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: 18px;
+  color: var(--ink);
+  box-shadow: inset 2px 2px 0 rgba(255,255,255,0.5), inset -2px -2px 0 rgba(0,0,0,0.4);
+}
+
+.player-info { flex: 1; min-width: 0; }
+
+.player-name {
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-id {
+  font-size: 16px;
+  color: var(--paper);
+  margin-top: 4px;
+}
+
+.stats-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.stat-chip {
+  flex: 1;
+  background: var(--stone);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--font-pixel);
+  font-size: 13px;
+  padding: 10px 6px;
+  margin-bottom: 0;
+}
+
+.stat-icon { font-size: 16px; }
+
+/* ── CONTENT ── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px 12px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: pop-in 0.12s steps(3); }
+
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section-title {
+  font-family: var(--font-pixel);
+  font-size: 13px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  margin: 10px 0 8px;
+}
+
+.info-box { background: var(--paper); }
+.info-box p { margin: 4px 0; font-size: 19px; line-height: 1.4; }
+
+/* ── FORM ELEMENTS ── */
+.craft-label {
+  display: block;
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  margin: 10px 0 6px;
+  color: var(--ink);
+}
+
+.craft-input {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 20px;
+  padding: 10px;
+  border: 3px solid var(--ink);
+  background: var(--paper);
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.25);
+  outline: none;
+  border-radius: 0;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.craft-input:focus { background: #fff; }
+
+/* ── BUTTONS: chunky Minecraft-style with pressed state ── */
+.craft-btn {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+  border: 4px solid var(--ink);
+  cursor: pointer;
+  border-radius: 0;
+  box-shadow:
+    inset 3px 3px 0 rgba(255,255,255,0.4),
+    inset -3px -3px 0 rgba(0,0,0,0.35),
+    4px 4px 0 rgba(0,0,0,0.3);
+}
+
+.craft-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow:
+    inset 3px 3px 0 rgba(0,0,0,0.35),
+    inset -3px -3px 0 rgba(255,255,255,0.2);
+}
+
+.craft-btn-green { background: var(--grass-dk); }
+.craft-btn-blue  { background: var(--sky-1); }
+.craft-btn-gold  { background: var(--gold-dk); }
+
+.craft-status {
+  margin-top: 12px;
+  font-size: 19px;
+  text-align: center;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  padding: 10px;
+}
+
+.price-label {
+  margin-top: 10px;
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  color: var(--gold-dk);
+}
+
+.qris-img {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+  margin: 8px auto;
+  border: 4px solid var(--ink);
+  image-rendering: auto;
+}
+
+.phone-display {
+  font-family: var(--font-pixel);
+  font-size: 16px;
+  text-align: center;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  padding: 12px;
+  margin-bottom: 8px;
+  word-break: break-all;
+}
+
+.otp-display {
+  text-align: center;
+  font-size: 22px;
+  background: var(--dirt);
+  color: #fff;
+  border: 3px solid var(--ink);
+  padding: 10px;
+}
+
+/* ── RIWAYAT LIST ── */
+.riwayat-list { display: flex; flex-direction: column; gap: 8px; }
+
+.riwayat-item {
+  background: var(--stone-lt);
+  border: 3px solid var(--ink);
+  padding: 10px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: inset 2px 2px 0 rgba(255,255,255,0.4), inset -2px -2px 0 rgba(0,0,0,0.25);
+}
+
+.riwayat-item .r-left { font-size: 18px; }
+.riwayat-item .r-name { font-family: var(--font-pixel); font-size: 10px; display: block; margin-bottom: 4px; }
+.riwayat-item .r-price { font-family: var(--font-pixel); font-size: 11px; color: var(--grass-dk); }
+
+.empty-state {
+  text-align: center;
+  color: var(--ink);
+  font-size: 19px;
+  padding: 30px 10px;
+  opacity: 0.8;
+}
+
+/* ── HOTBAR (bottom nav) ── */
+.hotbar {
+  display: flex;
+  background: var(--dirt-dk);
+  border-top: 4px solid var(--ink);
+  padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+  gap: 6px;
+}
+
+.hotbar-slot {
+  flex: 1;
+  background: var(--stone);
+  border: 3px solid var(--ink);
+  box-shadow: inset 2px 2px 0 rgba(255,255,255,0.45), inset -2px -2px 0 rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 2px;
+  cursor: pointer;
+  border-radius: 0;
+  font-family: var(--font-pixel);
+  color: var(--ink);
+}
+
+.hotbar-slot.active {
+  background: var(--gold);
+  box-shadow: inset 2px 2px 0 rgba(0,0,0,0.3), inset -2px -2px 0 rgba(255,255,255,0.3);
+  transform: translateY(1px);
+}
+
+.slot-icon { font-size: 18px; }
+.slot-label { font-size: 8px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  padding: 12px 16px;
+  border: 3px solid #000;
+  z-index: 50;
+  max-width: 85%;
+  text-align: center;
+}
+
+.hidden { display: none !important; }
+
+/* ── DARK MODE (Telegram dark theme) ── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #d8cfae;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #d8cfae;
+}
+
+</style>
 </head>
 <body>
-  <div id="scan" class="scan">
-    <div class="scanbox">
-      <div class="robot">🤖</div>
-      <div class="scan-title">SYSTEM ANALYSIS</div>
-      <div id="scanText" class="scan-text">Menghubungkan ke Telegram...</div>
-      <div class="scan-bars"><div class="scan-bar"><i></i></div><div class="scan-bar"><i></i></div><div class="scan-bar"><i></i></div><div class="scan-bar"><i></i></div></div>
-    </div>
-  </div>
 
-  <main class="app">
-    <header class="topbar">
-      <div class="brand"><div class="brand-icon pixel">▣</div><div><div class="brand-title">NOKOS VIP</div><div class="brand-sub">Telegram Mini App • Control Panel</div></div></div>
-      <div id="apiStatus" class="status">CONNECTING</div>
-    </header>
-
-    <section class="hero">
-      <div class="profile">
-        <div id="avatarWrap" class="avatar avatar-fallback">👤</div>
-        <div><div class="hello">Akun Telegram terdeteksi</div><div id="fullName" class="name">Memuat...</div><div id="username" class="username">@-</div></div>
+  <!-- ── TOP BAR: profil pemain ── -->
+  <header class="topbar">
+    <div class="player-card block-panel">
+      <div id="avatar" class="skin-avatar">?</div>
+      <div class="player-info">
+        <div id="playerName" class="player-name">Loading...</div>
+        <div id="playerId" class="player-id">ID: -</div>
       </div>
-      <div class="stats">
-        <div class="stat"><div class="stat-label">Coin</div><div id="coin" class="stat-value">Rp0</div></div>
-        <div class="stat"><div class="stat-label">TRX</div><div id="trx" class="stat-value">0x</div></div>
-        <div class="stat"><div class="stat-label">Point</div><div id="point" class="stat-value">0</div></div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-chip block-panel">
+        <span class="stat-icon">🪙</span>
+        <span id="coinValue">0</span>
+      </div>
+      <div class="stat-chip block-panel">
+        <span class="stat-icon">⭐</span>
+        <span id="pointValue">0</span>
+      </div>
+      <div class="stat-chip block-panel">
+        <span class="stat-icon">📦</span>
+        <span id="trxValue">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── MAIN CONTENT AREA (per tab) ── -->
+  <main id="content" class="content">
+
+    <!-- HOME -->
+    <section id="tab-home" class="tab-panel active">
+      <div class="section-title">📋 SELAMAT DATANG</div>
+      <div class="block-panel info-box">
+        <p>Halo, <b id="homeUsername">Player</b>! Gunakan menu di bawah untuk deposit coin, beli nomor OTP, cek riwayat, atau tukar point.</p>
+      </div>
+      <div class="section-title">🔗 REFERRAL</div>
+      <div class="block-panel info-box">
+        <p>Total referral: <b id="refCount">0</b></p>
+        <p>Point dari referral: <b id="refPoint">0</b></p>
       </div>
     </section>
 
-    <div id="homeView">
-      <div class="section-title"><h2>⚡ Quick Access</h2><span>MiniCraft UI</span></div>
-      <div class="grid">
-        <div class="card click" onclick="openBuy()"><div class="iconbox">📱</div><h3>Beli Nokos</h3><p>Server 1 + RumahOTP, nomor dan OTP.</p></div>
-        <div class="card click" onclick="openDeposit()"><div class="iconbox">💳</div><h3>Deposit Coin</h3><p>QRIS GoPay otomatis dengan status realtime.</p></div>
-        <div class="card click" onclick="showHistory()"><div class="iconbox">🧾</div><h3>Riwayat TRX</h3><p>Lihat transaksi akun yang sedang login.</p></div>
-        <div class="card click" onclick="refreshMe()"><div class="iconbox">🔄</div><h3>Refresh Data</h3><p>Sinkronkan coin, TRX dan profil terbaru.</p></div>
+    <!-- DEPOSIT -->
+    <section id="tab-deposit" class="tab-panel">
+      <div class="section-title">💰 DEPOSIT COIN</div>
+      <div class="block-panel">
+        <label class="craft-label">NOMINAL (Rp)</label>
+        <input id="depositAmount" type="number" min="1000" step="1000" placeholder="cth: 10000" class="craft-input" />
+        <button id="btnDeposit" class="craft-btn craft-btn-green">BUAT PEMBAYARAN</button>
       </div>
-      <div class="section-title"><h2>🛡️ System</h2><span>Secure session</span></div>
-      <div class="notice"><strong>Telegram session aktif.</strong><br>Mini App tidak meminta password atau token bot. Identitas akun diverifikasi memakai <span class="mono">Telegram WebApp initData</span> di backend bot sebelum data coin/transaksi dibaca.</div>
-    </div>
-
-    <div id="buyView" class="hidden">
-      <button class="btn small back" onclick="goHome()">← Kembali</button>
-      <div class="section-title"><h2>📱 Beli Nokos</h2><span>Pilih server</span></div>
-      <div class="grid">
-        <div class="card click" onclick="loadS1Countries()"><div class="iconbox">🟩</div><h3>Server 1</h3><p>SMSCode • Negara → layanan → harga.</p></div>
-        <div class="card click" onclick="loadS2Services()"><div class="iconbox">🟦</div><h3>Server 2</h3><p>RumahOTP • App → negara → operator.</p></div>
+      <div id="depositResult" class="block-panel hidden">
+        <div class="section-title">📷 SCAN QRIS</div>
+        <img id="qrisImage" class="qris-img" alt="QRIS" />
+        <div id="depositStatus" class="craft-status">Menunggu pembayaran...</div>
       </div>
-      <div id="buyContent" class="stack" style="margin-top:12px"></div>
-    </div>
+    </section>
 
-    <div id="depositView" class="hidden">
-      <button class="btn small back" onclick="goHome()">← Kembali</button>
-      <div class="section-title"><h2>💳 Deposit Coin</h2><span>GoPay QRIS</span></div>
-      <div class="card">
-        <div class="notice"><strong>Saldo coin mengikuti db.json.</strong><br>Nominal deposit akan dikreditkan otomatis setelah gateway menyatakan pembayaran berhasil.</div>
-        <div class="row" style="margin-top:10px"><input id="depositAmount" class="search" inputmode="numeric" placeholder="Contoh: 10000" value="5000"><button class="btn primary" style="max-width:130px" onclick="createDeposit()">Buat QR</button></div>
+    <!-- BELI NOKOS -->
+    <section id="tab-buy" class="tab-panel">
+      <div class="section-title">📱 BELI NOMOR OTP</div>
+      <div class="block-panel">
+        <label class="craft-label">PROVIDER</label>
+        <select id="providerSelect" class="craft-input">
+          <option value="smscode">SMSCode.gg</option>
+          <option value="rumahotp">RumahOTP</option>
+        </select>
+        <label class="craft-label">NEGARA / LAYANAN</label>
+        <select id="serviceSelect" class="craft-input">
+          <option value="">-- pilih --</option>
+        </select>
+        <div id="priceLabel" class="price-label">Harga: - coin</div>
+        <button id="btnBuy" class="craft-btn craft-btn-blue">BELI SEKARANG</button>
       </div>
-      <div id="depositContent" style="margin-top:12px"></div>
-    </div>
+      <div id="buyResult" class="block-panel hidden">
+        <div class="section-title">📩 NOMOR AKTIF</div>
+        <div id="phoneNumber" class="phone-display">-</div>
+        <div id="otpCode" class="otp-display">Menunggu kode OTP...</div>
+      </div>
+    </section>
 
-    <div id="historyView" class="hidden">
-      <button class="btn small back" onclick="goHome()">← Kembali</button>
-      <div class="section-title"><h2>🧾 Riwayat Transaksi</h2><span>10 terakhir</span></div>
-      <div id="historyContent" class="list"></div>
-    </div>
+    <!-- RIWAYAT -->
+    <section id="tab-riwayat" class="tab-panel">
+      <div class="section-title">📜 RIWAYAT TRANSAKSI</div>
+      <div id="riwayatList" class="riwayat-list">
+        <div class="empty-state">Belum ada transaksi.</div>
+      </div>
+    </section>
+
+    <!-- POINT -->
+    <section id="tab-point" class="tab-panel">
+      <div class="section-title">⭐ TUKAR POINT</div>
+      <div class="block-panel info-box">
+        <p>Point kamu: <b id="pointDetail">0</b></p>
+        <p>Setiap 1000 point bisa ditukar coin (kelipatan naik tiap tier).</p>
+      </div>
+      <button id="btnExchange" class="craft-btn craft-btn-gold">TUKAR SEKARANG</button>
+      <div id="exchangeResult" class="craft-status hidden"></div>
+    </section>
+
   </main>
 
-  <div id="modal" class="modal"><div class="sheet"><div class="sheet-head"><h3 id="modalTitle">Status</h3><button class="close" onclick="closeModal()">✕</button></div><div id="modalBody"></div></div></div>
-  <div id="toast" class="toast"></div>
+  <!-- ── HOTBAR NAVIGATION (ala Minecraft inventory) ── -->
+  <nav class="hotbar">
+    <button class="hotbar-slot active" data-tab="home">
+      <span class="slot-icon">🏠</span><span class="slot-label">Home</span>
+    </button>
+    <button class="hotbar-slot" data-tab="deposit">
+      <span class="slot-icon">💰</span><span class="slot-label">Deposit</span>
+    </button>
+    <button class="hotbar-slot" data-tab="buy">
+      <span class="slot-icon">📱</span><span class="slot-label">Beli</span>
+    </button>
+    <button class="hotbar-slot" data-tab="riwayat">
+      <span class="slot-icon">📜</span><span class="slot-label">Riwayat</span>
+    </button>
+    <button class="hotbar-slot" data-tab="point">
+      <span class="slot-icon">⭐</span><span class="slot-label">Point</span>
+    </button>
+  </nav>
 
-<script>
-(() => {
-  'use strict';
+  <div id="toast" class="toast hidden"></div>
 
-   // SET SEKALI setelah bot API punya URL publik. Bisa juga override via ?api=https://ryuutzyy.r-cloud.my.id.
-  const API_BASE = (new URLSearchParams(location.search).get('api') || 'https://ryuutzyy.r-cloud.my.id').replace(/\/$/, '');
-  const tg = window.Telegram?.WebApp;
-  let meData = null;
-  let poller = null;
-  let depositPoller = null;
-  let currentOrder = null;
-  let currentServer = null;
+  <script>
+// ════════════════════════════════════════════════════════════════
+//  KONFIGURASI — GANTI INI setelah backend (miniapp-api.js) online
+// ════════════════════════════════════════════════════════════════
+const CONFIG = {
+  // Ganti dengan URL publik backend lu (lihat panduan di miniapp-api.js)
+  // Wajib https:// karena Mini App dibuka di https://web.telegram.org / app Telegram
+  API_BASE: "https://api-nokos.domainlu.com",
+};
 
-  const $ = id => document.getElementById(id);
-  const rupiah = n => 'Rp' + Number(n || 0).toLocaleString('id-ID');
-  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-  const apiReady = () => !API_BASE.includes('https://ryuutzyy.r-cloud.my.id');
+// ════════════════════════════════════════════════════════════════
+//  TELEGRAM WEBAPP INIT
+// ════════════════════════════════════════════════════════════════
+const tg = window.Telegram?.WebApp;
+let initData = "";
 
-  function toast(msg){ const el=$('toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),2600); }
-  function showModal(title, html){ $('modalTitle').textContent=title; $('modalBody').innerHTML=html; $('modal').classList.add('show'); }
-  function closeModal(){ $('modal').classList.remove('show'); }
-  window.closeModal=closeModal;
-
-  async function api(path, options={}){
-    if(!apiReady()) throw new Error('API Mini App belum diatur. Isi API_BASE di index.html.');
-    const initData = tg?.initData || '';
-    if(!initData) throw new Error('Mini App harus dibuka dari Telegram.');
-    const res = await fetch(API_BASE + path, { ...options, headers:{'Content-Type':'application/json','Authorization':'Bearer '+initData,...(options.headers||{})} });
-    let data=null; try{data=await res.json()}catch{}
-    if(!res.ok || !data?.ok) throw new Error(data?.error || `Server error (${res.status})`);
-    return data.data;
+function initTelegram() {
+  if (!tg) {
+    showToast("Buka ini dari dalam Telegram, bukan browser biasa.");
+    return;
   }
+  tg.ready();
+  tg.expand();
+  initData = tg.initData || "";
 
-  function setView(name){
-    ['homeView','buyView','depositView','historyView'].forEach(id => $(id).classList.toggle('hidden', id !== name));
-    window.scrollTo({top:0,behavior:'smooth'});
+  // sinkronkan tema Telegram (dark/light) ke halaman
+  document.documentElement.setAttribute(
+    "data-theme",
+    tg.colorScheme === "dark" ? "dark" : "light"
+  );
+  tg.onEvent("themeChanged", () => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      tg.colorScheme === "dark" ? "dark" : "light"
+    );
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  API HELPER
+// ════════════════════════════════════════════════════════════════
+async function api(path, options = {}) {
+  const res = await fetch(CONFIG.API_BASE + path, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      "x-init-data": initData,
+      ...(options.headers || {}),
+    },
+  });
+  const data = await res.json().catch(() => ({ ok: false, error: "Response tidak valid" }));
+  if (!res.ok || !data.ok) {
+    throw new Error(data.error || `Gagal (${res.status})`);
   }
-  window.goHome=()=>setView('homeView');
-  window.openBuy=()=>{setView('buyView'); $('buyContent').innerHTML='<div class="notice">Pilih server untuk memuat stok terbaru.</div>'};
-  window.openDeposit=()=>{setView('depositView'); $('depositContent').innerHTML=''};
+  return data;
+}
 
-  function renderMe(data){
-    meData=data; const u=data.user||{}, a=data.account||{};
-    $('fullName').textContent=[u.first_name,u.last_name].filter(Boolean).join(' ') || 'Telegram User';
-    $('username').textContent=u.username ? '@'+u.username : 'ID '+u.id;
-    $('coin').textContent=rupiah(a.coin); $('trx').textContent=Number(a.trx||0)+'x'; $('point').textContent=Number(a.point||0);
-    if(u.photo_url){ const img=document.createElement('img'); img.className='avatar'; img.alt=''; img.src=u.photo_url; $('avatarWrap').replaceWith(img); img.id='avatarWrap'; }
-    $('apiStatus').textContent='ONLINE'; $('apiStatus').style.color='var(--accent)';
+function showToast(msg, ms = 2800) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.remove("hidden");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => el.classList.add("hidden"), ms);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  TAB NAVIGATION (hotbar)
+// ════════════════════════════════════════════════════════════════
+function setupTabs() {
+  const slots = document.querySelectorAll(".hotbar-slot");
+  slots.forEach((slot) => {
+    slot.addEventListener("click", () => {
+      const tabId = slot.dataset.tab;
+      slots.forEach((s) => s.classList.remove("active"));
+      slot.classList.add("active");
+      document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
+      document.getElementById("tab-" + tabId).classList.add("active");
+      tg?.HapticFeedback?.impactOccurred("light");
+
+      if (tabId === "riwayat") loadRiwayat();
+      if (tabId === "buy") loadServices();
+    });
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  PROFILE / STATS
+// ════════════════════════════════════════════════════════════════
+async function loadProfile() {
+  try {
+    await api("/api/auth", { method: "POST" });
+    const data = await api("/api/me");
+    const p = data.profile;
+
+    document.getElementById("playerName").textContent = p.username || p.id;
+    document.getElementById("playerId").textContent = "ID: " + p.id;
+    document.getElementById("homeUsername").textContent = p.username || p.id;
+    document.getElementById("avatar").textContent = (p.username || "?").slice(0, 1).toUpperCase();
+
+    document.getElementById("coinValue").textContent = formatNumber(p.coin);
+    document.getElementById("pointValue").textContent = formatNumber(p.point);
+    document.getElementById("trxValue").textContent = p.trx;
+    document.getElementById("pointDetail").textContent = formatNumber(p.point);
+
+    document.getElementById("refCount").textContent = data.referral?.referralCount || 0;
+    document.getElementById("refPoint").textContent = data.referral?.point || 0;
+  } catch (e) {
+    showToast("Gagal memuat profil: " + e.message);
   }
-  async function refreshMe(){ try{renderMe(await api('/api/miniapp/me')); toast('Data akun disinkronkan.')}catch(e){toast(e.message)} }
-  window.refreshMe=refreshMe;
+}
 
-  function scanSequence(){
-    const texts=['Menghubungkan ke Telegram...','Memverifikasi session akun...','Membaca data user...','Sinkronisasi coin & TRX...','Analisis selesai ✓']; let i=0;
-    const t=setInterval(()=>{ if(i<texts.length){$('scanText').textContent=texts[i++]} else clearInterval(t)},420);
-  }
+function formatNumber(n) {
+  return new Intl.NumberFormat("id-ID").format(Number(n || 0));
+}
 
-  async function boot(){
-    if(tg){tg.ready(); tg.expand(); try{tg.setHeaderColor('#10151a');tg.setBackgroundColor('#10151a')}catch{}}
-    scanSequence();
-    try{
-      if(!tg?.initData) throw new Error('Mini App harus dibuka dari Telegram.');
-      if(!apiReady()) throw new Error('API backend belum dikonfigurasi di index.html.');
-      renderMe(await api('/api/miniapp/me'));
-      setTimeout(()=>{$('scan').classList.add('hide')},1900);
-    }catch(e){
-      $('apiStatus').textContent='OFFLINE'; $('apiStatus').style.color='var(--danger)'; $('scanText').textContent=e.message;
-      setTimeout(()=>{$('scan').classList.add('hide'); toast(e.message)},2100);
+// ════════════════════════════════════════════════════════════════
+//  DEPOSIT
+// ════════════════════════════════════════════════════════════════
+let depositPollTimer = null;
+
+function setupDeposit() {
+  document.getElementById("btnDeposit").addEventListener("click", async () => {
+    const nominal = Number(document.getElementById("depositAmount").value);
+    if (!nominal || nominal < 1000) {
+      showToast("Isi nominal minimal Rp1.000");
+      return;
     }
-  }
+    try {
+      const btn = document.getElementById("btnDeposit");
+      btn.textContent = "MEMBUAT...";
+      btn.disabled = true;
 
-  function contentLoading(text='Memuat...'){return `<div class="notice">🔍 ${esc(text)}</div>`}
-  function itemButton(html, onclick){return `<div class="item"><div class="item-main">${html}</div><button class="btn small primary" style="max-width:105px" onclick="${onclick}">Pilih</button></div>`}
+      const data = await api("/api/deposit", {
+        method: "POST",
+        body: JSON.stringify({ nominal }),
+      });
 
-  async function loadS1Countries(){
-    currentServer=1; $('buyContent').innerHTML=contentLoading('Memuat negara Server 1...');
-    try{
-      const countries=await api('/api/miniapp/server1/countries');
-      $('buyContent').innerHTML=`<input id="buySearch" class="search" placeholder="🔎 Cari negara..." oninput="filterItems()"><div id="buyList" class="list"></div>`;
-      $('buyList')._items=countries.map(c=>({c,html:itemButton(`<div class="item-title">${esc(c.emoji)} ${esc(c.name)}</div><div class="item-meta">Server 1 • pilih untuk melihat layanan</div>`,`loadS1Services(${Number(c.id)},'${esc(c.name).replace(/'/g,"\\'")}')`)})); renderItemList(countries);
-    }catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
-  }
-  async function loadS1Services(countryId,countryName){
-    $('buyContent').innerHTML=contentLoading('Memuat layanan '+countryName+'...');
-    try{
-      const services=await api('/api/miniapp/server1/services?country_id='+encodeURIComponent(countryId));
-      if(!services.length){$('buyContent').innerHTML='<div class="notice">Tidak ada layanan tersedia.</div>';return}
-      $('buyContent').innerHTML=`<button class="btn small back" onclick="loadS1Countries()">← ${esc(countryName)}</button><input id="buySearch" class="search" placeholder="🔎 Cari layanan..." oninput="filterItems()"><div id="buyList" class="list"></div>`;
-      const arr=services.map(s=>({s,html:itemButton(`<div class="item-title">📲 ${esc(s.name)}</div><div class="item-meta">${esc(countryName)} • lihat stok & harga</div>`,`loadS1Products(${countryId},${Number(s.id)},'${esc(countryName).replace(/'/g,"\\'")}')`)})); $('buyList')._items=arr; renderItemList(arr.map(x=>x.s));
-    }catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
-  }
-  async function loadS1Products(countryId,platformId,countryName,page=1){
-    $('buyContent').innerHTML=contentLoading('Memuat stok & harga...');
-    try{
-      const d=await api(`/api/miniapp/server1/products?country_id=${countryId}&platform_id=${platformId}&page=${page}`);
-      const products=d.products||[];
-      if(!products.length){$('buyContent').innerHTML='<div class="notice">Stok produk habis / kosong.</div>';return}
-      $('buyContent').innerHTML=`<button class="btn small back" onclick="loadS1Services(${countryId},'${esc(countryName).replace(/'/g,"\\'")}')">← ${esc(countryName)}</button><input id="buySearch" class="search" placeholder="🔎 Cari harga..." oninput="filterItems()"><div id="buyList" class="list"></div>`;
-      const arr=products.map(p=>({p,html:itemButton(`<div class="item-title">💰 ${rupiah(p.price)}</div><div class="item-meta">${esc(p.name||'Nokos')} • <span class="stock">${Number(p.available||0)} stok</span></div>`,`confirmS1(${Number(p.id)},${countryId},${platformId},'${esc(countryName).replace(/'/g,"\\'")}','${esc(p.name||'Nokos').replace(/'/g,"\\'")}',${Number(p.price)})`)})); $('buyList')._items=arr; renderItemList(arr.map(x=>x.p));
-    }catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
-  }
-  function renderItemList(source){ const list=$('buyList'); if(!list)return; const arr=list._items||[]; list.innerHTML=arr.map(x=>x.html).join('')||'<div class="notice">Tidak ada hasil.</div>'; }
-  function filterItems(){const q=($('buySearch')?.value||'').toLowerCase();const list=$('buyList');if(!list)return;list.innerHTML=(list._items||[]).filter(x=>JSON.stringify(x).toLowerCase().includes(q)).map(x=>x.html).join('')||'<div class="notice">Tidak ditemukan.</div>'}
-  window.filterItems=filterItems; window.loadS1Countries=loadS1Countries; window.loadS1Services=loadS1Services; window.loadS1Products=loadS1Products;
+      const box = document.getElementById("depositResult");
+      box.classList.remove("hidden");
+      document.getElementById("qrisImage").src = data.qris?.qr_image_url || data.qris?.qris_url || "";
+      document.getElementById("depositStatus").textContent = "Menunggu pembayaran...";
 
-  async function confirmS1(productId,countryId,platformId,countryName,productName,price){
-    showModal('Konfirmasi Server 1',`<div class="card"><div class="item-title">📦 ${esc(productName)}</div><div class="item-meta">🌍 ${esc(countryName)}<br>Harga: <b class="price">${rupiah(price)}</b><br>Saldo sekarang: <b>${rupiah(meData?.account?.coin)}</b></div></div><div class="row" style="margin-top:10px"><button class="btn" onclick="closeModal()">Batal</button><button class="btn primary" onclick="buyS1(${productId},${countryId},${platformId})">🛒 Beli</button></div>`);
-  }
-  window.confirmS1=confirmS1;
-  async function buyS1(productId,countryId,platformId){
-    closeModal(); showModal('Memproses order','<div class="center"><div style="font-size:36px">🤖</div><p class="muted">Mengamankan coin dan membuat order...</p></div>');
-    try{currentOrder=await api('/api/miniapp/order/server1',{method:'POST',body:JSON.stringify({product_id:productId,country_id:countryId,platform_id:platformId})});renderOrder(currentOrder);startOrderPolling(currentOrder.trxId)}catch(e){showModal('Order gagal',`<div class="notice error">❌ ${esc(e.message)}</div><button class="btn" style="margin-top:10px" onclick="closeModal()">Tutup</button>`)}
-  }
-  window.buyS1=buyS1;
+      startDepositPolling(data.depoId);
+    } catch (e) {
+      showToast("Gagal buat pembayaran: " + e.message);
+    } finally {
+      const btn = document.getElementById("btnDeposit");
+      btn.textContent = "BUAT PEMBAYARAN";
+      btn.disabled = false;
+    }
+  });
+}
 
-  async function loadS2Services(){
-    currentServer=2; $('buyContent').innerHTML=contentLoading('Memuat aplikasi RumahOTP...');
-    try{const services=await api('/api/miniapp/server2/services');$('buyContent').innerHTML=`<input id="buySearch" class="search" placeholder="🔎 Cari aplikasi..." oninput="filterItems()"><div id="buyList" class="list"></div>`;const arr=services.map(s=>({s,html:itemButton(`<div class="item-title">🧩 ${esc(s.name)}</div><div class="item-meta">Server 2 • RumahOTP</div>`,`loadS2Countries(${Number(s.id)},'${esc(s.name).replace(/'/g,"\\'")}')`)}));$('buyList')._items=arr;renderItemList(services)}catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
-  }
-  async function loadS2Countries(serviceId,serviceName){
-    $('buyContent').innerHTML=contentLoading('Memuat negara '+serviceName+'...');
-    try{const countries=await api('/api/miniapp/server2/countries?service_id='+serviceId);$('buyContent').innerHTML=`<button class="btn small back" onclick="loadS2Services()">← ${esc(serviceName)}</button><input id="buySearch" class="search" placeholder="🔎 Cari negara..." oninput="filterItems()"><div id="buyList" class="list"></div>`;const arr=countries.map(c=>({c,html:itemButton(`<div class="item-title">🌍 ${esc(c.name)}</div><div class="item-meta">Stok: <span class="stock">${Number(c.stock||0)}</span> • mulai ${rupiah(c.price)}</div>`,`loadS2Prices(${serviceId},${Number(c.number_id)},'${esc(serviceName).replace(/'/g,"\\'")}','${esc(c.name).replace(/'/g,"\\'")}')`)}));$('buyList')._items=arr;renderItemList(countries)}catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
-  }
-  async function loadS2Prices(serviceId,numberId,serviceName,countryName){
-    $('buyContent').innerHTML=contentLoading('Memuat pricelist...');
-    try{const countries=await api('/api/miniapp/server2/countries?service_id='+serviceId);const c=countries.find(x=>Number(x.number_id)===numberId);if(!c)throw new Error('Negara sudah tidak tersedia.');const prices=c.pricelist||[];$('buyContent').innerHTML=`<button class="btn small back" onclick="loadS2Countries(${serviceId},'${esc(serviceName).replace(/'/g,"\\'")}')">← ${esc(countryName)}</button><div class="list"></div>`;const list=$('buyContent').querySelector('.list');list.innerHTML=prices.map(p=>`<div class="item"><div class="item-main"><div class="item-title">💰 ${rupiah(p.price)} ${p.server_id?`• server ${esc(p.server_id)}`:''}</div><div class="item-meta">Provider: ${esc(p.provider_id)} • stok <span class="stock">${Number(p.stock||0)}</span></div></div><button class="btn small primary" style="max-width:105px" onclick="loadS2Operators(${serviceId},${numberId},'${esc(p.provider_id).replace(/'/g,"\\'")}','${esc(serviceName).replace(/'/g,"\\'")}','${esc(countryName).replace(/'/g,"\\'")}')">Pilih</button></div>`).join('')||'<div class="notice">Pricelist kosong.</div>'}catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
-  }
-  async function loadS2Operators(serviceId,numberId,providerId,serviceName,countryName){
-    $('buyContent').innerHTML=contentLoading('Memuat operator...');
-    try{const ops=await api(`/api/miniapp/server2/operators?country=${encodeURIComponent(countryName)}&provider_id=${encodeURIComponent(providerId)}`);const choices=ops.length?ops:[{id:1,name:'Any'}];$('buyContent').innerHTML=`<button class="btn small back" onclick="loadS2Prices(${serviceId},${numberId},'${esc(serviceName).replace(/'/g,"\\'")}','${esc(countryName).replace(/'/g,"\\'")}')">← ${esc(countryName)}</button><div class="list">${choices.map(o=>`<div class="item"><div class="item-main"><div class="item-title">📡 ${esc(o.name)}</div><div class="item-meta">${esc(serviceName)} • ${esc(countryName)}</div></div><button class="btn small primary" style="max-width:105px" onclick="confirmS2(${serviceId},${numberId},'${esc(providerId).replace(/'/g,"\\'")}',${Number(o.id)},'${esc(serviceName).replace(/'/g,"\\'")}','${esc(countryName).replace(/'/g,"\\'")}','${esc(o.name).replace(/'/g,"\\'")}')">Pilih</button></div>`).join('')}</div>`}catch(e){$('buyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
-  }
-  window.loadS2Services=loadS2Services;window.loadS2Countries=loadS2Countries;window.loadS2Prices=loadS2Prices;window.loadS2Operators=loadS2Operators;
+function startDepositPolling(depoId) {
+  clearInterval(depositPollTimer);
+  depositPollTimer = setInterval(async () => {
+    try {
+      const data = await api(`/api/deposit/${depoId}/status`);
+      const statusEl = document.getElementById("depositStatus");
+      if (data.status === "success") {
+        statusEl.textContent = "✅ Pembayaran berhasil! Coin sudah masuk.";
+        clearInterval(depositPollTimer);
+        tg?.HapticFeedback?.notificationOccurred("success");
+        loadProfile();
+      } else {
+        statusEl.textContent = "Menunggu pembayaran... (" + data.status + ")";
+      }
+    } catch (e) {
+      // diamkan, coba lagi di polling berikutnya
+    }
+  }, 5000);
+}
 
-  async function confirmS2(serviceId,numberId,providerId,operatorId,serviceName,countryName,operatorName){
-    try{const countries=await api('/api/miniapp/server2/countries?service_id='+serviceId);const c=countries.find(x=>Number(x.number_id)===numberId);const p=(c?.pricelist||[]).find(x=>String(x.provider_id)===String(providerId));if(!p)throw new Error('Harga sudah berubah.');const price=Number(p.price||0);showModal('Konfirmasi Server 2',`<div class="card"><div class="item-title">🧩 ${esc(serviceName)}</div><div class="item-meta">🌍 ${esc(countryName)}<br>📡 ${esc(operatorName)}<br>💰 Harga: <b class="price">${rupiah(price)}</b><br>🪙 Coin: <b>${rupiah(meData?.account?.coin)}</b></div></div><div class="row" style="margin-top:10px"><button class="btn" onclick="closeModal()">Batal</button><button class="btn primary" onclick="buyS2(${serviceId},${numberId},'${esc(providerId).replace(/'/g,"\\'")}',${operatorId})">🛒 Beli</button></div>`)}catch(e){toast(e.message)}
+// ════════════════════════════════════════════════════════════════
+//  BELI NOKOS
+// ════════════════════════════════════════════════════════════════
+let servicesLoaded = false;
+
+async function loadServices() {
+  if (servicesLoaded) return;
+  try {
+    const data = await api("/api/services");
+    const select = document.getElementById("serviceSelect");
+    select.innerHTML = '<option value="">-- pilih --</option>';
+
+    (data.smscode || []).forEach((c) => {
+      const opt = document.createElement("option");
+      opt.value = JSON.stringify({ provider: "smscode", id: c.id, name: c.name, price: c.price });
+      opt.textContent = `[SMSCode] ${c.name || c.id}`;
+      select.appendChild(opt);
+    });
+    (data.rumahotp || []).forEach((s) => {
+      const opt = document.createElement("option");
+      opt.value = JSON.stringify({ provider: "rumahotp", id: s.id, name: s.name, price: s.price });
+      opt.textContent = `[RumahOTP] ${s.name || s.id}`;
+      select.appendChild(opt);
+    });
+    servicesLoaded = true;
+  } catch (e) {
+    showToast("Gagal memuat daftar layanan: " + e.message);
   }
-  window.confirmS2=confirmS2;
-  async function buyS2(serviceId,numberId,providerId,operatorId){closeModal();showModal('Memproses order','<div class="center"><div style="font-size:36px">🤖</div><p class="muted">Mengamankan coin dan membuat order RumahOTP...</p></div>');try{currentOrder=await api('/api/miniapp/order/server2',{method:'POST',body:JSON.stringify({service_id:serviceId,number_id:numberId,provider_id:providerId,operator_id:operatorId})});renderOrder(currentOrder);startOrderPolling(currentOrder.trxId)}catch(e){showModal('Order gagal',`<div class="notice error">❌ ${esc(e.message)}</div><button class="btn" style="margin-top:10px" onclick="closeModal()">Tutup</button>`)} }
-  window.buyS2=buyS2;
+}
 
-  function renderOrder(o){currentOrder=o;const cancelable=Date.now()>=Number(o.cancelAt||0);showModal('Order aktif',`<div class="card"><div class="item-title">📱 ${o.server===2?'Server 2 • RumahOTP':'Server 1'}</div><div class="item-meta">🧾 TRX: <span class="mono">${esc(o.trxId)}</span><br>📞 Nomor: <b>${esc(o.phone)}</b><br>💰 Harga: <b>${rupiah(o.price)}</b><br>🪙 Sisa coin: <b>${rupiah(o.coin)}</b><br>⏳ ${o.expiresAt?new Date(o.expiresAt).toLocaleString('id-ID'): 'menunggu status'}</div></div><div id="orderStatusBox" class="notice" style="margin-top:10px">⏳ Menunggu OTP...</div><button id="cancelOrderBtn" class="btn danger" style="margin-top:10px" ${cancelable?'':'disabled'} onclick="cancelCurrentOrder()">🚫 Batalkan Order</button>`);if(!cancelable)setTimeout(()=>renderOrder(o),Math.max(1000,Number(o.cancelAt||0)-Date.now()+100));}
-  function startOrderPolling(trxId){clearInterval(poller);poller=setInterval(async()=>{try{const s=await api('/api/miniapp/order/'+encodeURIComponent(trxId));const box=$('orderStatusBox');if(!box)return;if(s.status==='otp'){box.className='notice success';box.innerHTML=`<strong>📩 OTP MASUK</strong><br>Nomor: <b>${esc(s.phone||currentOrder.phone)}</b><br>Kode: <b class="mono">${esc(s.otp)}</b><br><br><span class="tiny">${esc(s.message||'')}</span>`;clearInterval(poller);await refreshMe();}else if(s.status==='refunded'){box.className='notice';box.innerHTML='🚫 Order dibatalkan/expired. Coin sudah dikembalikan.';clearInterval(poller);await refreshMe();}else if(s.status==='checking'){box.textContent='🔄 Mengecek provider...';}else{box.textContent='⏳ Menunggu OTP dari provider...';}}catch(e){const box=$('orderStatusBox');if(box)box.textContent='⚠️ '+e.message}},5000)}
-  async function cancelCurrentOrder(){if(!currentOrder?.trxId)return;try{const r=await api('/api/miniapp/order/'+encodeURIComponent(currentOrder.trxId)+'/cancel',{method:'POST',body:'{}'});clearInterval(poller);showModal('Order dibatalkan',`<div class="notice success">✅ Coin dikembalikan.<br>Saldo: <b>${rupiah(r.coin)}</b></div><button class="btn primary" style="margin-top:10px" onclick="closeModal();refreshMe()">Selesai</button>`)}catch(e){toast(e.message)}}
-  window.cancelCurrentOrder=cancelCurrentOrder;
+function setupBuy() {
+  document.getElementById("serviceSelect").addEventListener("change", (e) => {
+    if (!e.target.value) return;
+    const item = JSON.parse(e.target.value);
+    document.getElementById("priceLabel").textContent = `Harga: ${formatNumber(item.price || 0)} coin`;
+  });
 
-  async function createDeposit(){
-    const amount=Math.floor(Number(String($('depositAmount').value).replace(/[^0-9]/g,'')));if(!amount){toast('Nominal belum diisi.');return}
-    $('depositContent').innerHTML=contentLoading('Membuat QRIS GoPay...');
-    try{const d=await api('/api/miniapp/deposit/gopay',{method:'POST',body:JSON.stringify({amount})});renderDeposit(d);startDepositPolling(d.id)}catch(e){$('depositContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}
+  document.getElementById("btnBuy").addEventListener("click", async () => {
+    const select = document.getElementById("serviceSelect");
+    if (!select.value) {
+      showToast("Pilih layanan dulu");
+      return;
+    }
+    const item = JSON.parse(select.value);
+    try {
+      const data = await api("/api/buy", {
+        method: "POST",
+        body: JSON.stringify({
+          provider: item.provider,
+          productId: item.id,
+          numberId: item.id,
+          harga: item.price,
+          productName: item.name,
+          negara: item.name,
+        }),
+      });
+
+      const box = document.getElementById("buyResult");
+      box.classList.remove("hidden");
+      document.getElementById("phoneNumber").textContent = data.order?.phone || data.order?.number || "-";
+      document.getElementById("otpCode").textContent = "Menunggu kode OTP...";
+
+      loadProfile();
+      pollOrder(item.provider, data.order?.orderId || data.order?.id);
+    } catch (e) {
+      showToast("Gagal beli: " + e.message);
+    }
+  });
+}
+
+function pollOrder(provider, orderId) {
+  if (!orderId) return;
+  const timer = setInterval(async () => {
+    try {
+      const data = await api(`/api/order/${provider}/${orderId}`);
+      const code = data.order?.sms || data.order?.code || data.order?.otp;
+      if (code) {
+        document.getElementById("otpCode").textContent = "📩 Kode: " + code;
+        clearInterval(timer);
+        tg?.HapticFeedback?.notificationOccurred("success");
+      }
+    } catch (e) {
+      // coba lagi di siklus berikutnya
+    }
+  }, 4000);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  RIWAYAT
+// ════════════════════════════════════════════════════════════════
+async function loadRiwayat() {
+  try {
+    const data = await api("/api/riwayat?limit=20");
+    const list = document.getElementById("riwayatList");
+    if (!data.riwayat.length) {
+      list.innerHTML = '<div class="empty-state">Belum ada transaksi.</div>';
+      return;
+    }
+    list.innerHTML = data.riwayat
+      .map(
+        (t) => `
+      <div class="riwayat-item">
+        <div class="r-left">
+          <span class="r-name">${escapeHtml(t.productName || "-")}</span>
+          <span>${escapeHtml(t.negara || "-")} · ${new Date(t.date).toLocaleDateString("id-ID")}</span>
+        </div>
+        <div class="r-price">${formatNumber(t.harga)}</div>
+      </div>
+    `
+      )
+      .join("");
+  } catch (e) {
+    showToast("Gagal memuat riwayat: " + e.message);
   }
-  function renderDeposit(d){$('depositContent').innerHTML=`<div class="card center"><div class="item-title">💳 QRIS GOPAY</div><div class="item-meta">ID: <span class="mono">${esc(d.id)}</span><br>Total: <b class="price">${rupiah(d.amount)}</b></div><div id="qrcode" class="qr"></div><div id="depStatus" class="notice">⏳ Menunggu pembayaran...</div>${d.checkoutUrl?`<a class="btn primary" style="display:block;text-decoration:none;margin-top:10px" href="${esc(d.checkoutUrl)}" target="_blank">💳 Buka Pembayaran</a>`:''}</div>`;if(window.QRCode){try{new QRCode($('qrcode'),{text:d.qrString,width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}catch(e){$('qrcode').innerHTML='<div class="tiny">QR gagal dirender. Gunakan tombol pembayaran.</div>'}}else{$('qrcode').innerHTML='<div class="tiny">Library QR belum termuat.</div>'}}
-  function startDepositPolling(id){clearInterval(depositPoller);depositPoller=setInterval(async()=>{try{const s=await api('/api/miniapp/deposit/'+encodeURIComponent(id));const box=$('depStatus');if(!box)return;if(s.status==='paid'){box.className='notice success';box.innerHTML=`<strong>✅ Pembayaran berhasil!</strong><br>Coin sekarang: <b>${rupiah(s.coin)}</b>`;clearInterval(depositPoller);await refreshMe()}else if(s.status==='expired'){box.className='notice error';box.textContent='⌛ QRIS sudah kedaluwarsa.';clearInterval(depositPoller)}else{box.textContent='⏳ Menunggu pembayaran...'}}catch(e){const box=$('depStatus');if(box)box.textContent='⚠️ '+e.message}},4000)}
-  window.createDeposit=createDeposit;
+}
 
-  async function showHistory(){setView('historyView');$('historyContent').innerHTML=contentLoading('Memuat riwayat...');try{const d=await api('/api/miniapp/me');renderMe(d);const h=d.history||[];$('historyContent').innerHTML=h.length?h.map(t=>`<div class="item history-row"><div class="item-main"><div class="item-title">🧾 ${esc(t.productName||'Nokos')}</div><div class="item-meta"><span class="tag ${t.refunded?'bad':'ok'}">${t.refunded?'REFUNDED':'TRX '+esc(t.server||'')}</span><br>${esc(t.phone)}<br>${new Date(t.date).toLocaleString('id-ID')}<br><span class="mono">${esc(t.id)}</span></div></div><div class="price">${rupiah(t.harga)}</div></div>`).join(''):'<div class="notice">Belum ada transaksi.</div>'}catch(e){$('historyContent').innerHTML=`<div class="notice error">❌ ${esc(e.message)}</div>`}}
-  window.showHistory=showHistory;
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
 
-  boot();
-})();
+// ════════════════════════════════════════════════════════════════
+//  POINT EXCHANGE
+// ════════════════════════════════════════════════════════════════
+function setupPoint() {
+  document.getElementById("btnExchange").addEventListener("click", async () => {
+    try {
+      const data = await api("/api/point/exchange", { method: "POST" });
+      const result = document.getElementById("exchangeResult");
+      result.classList.remove("hidden");
+      if (data.success) {
+        result.textContent = `✅ Berhasil tukar ${formatNumber(data.pointUsed)} point jadi ${formatNumber(data.coinGained)} coin!`;
+        loadProfile();
+      } else {
+        result.textContent = "❌ Point belum cukup untuk ditukar (minimal 1000).";
+      }
+    } catch (e) {
+      showToast("Gagal tukar point: " + e.message);
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  BOOTSTRAP
+// ════════════════════════════════════════════════════════════════
+function init() {
+  initTelegram();
+  setupTabs();
+  setupDeposit();
+  setupBuy();
+  setupPoint();
+  loadProfile();
+}
+
+document.addEventListener("DOMContentLoaded", init);
+
 </script>
 </body>
 </html>
